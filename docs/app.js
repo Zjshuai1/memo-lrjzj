@@ -285,7 +285,7 @@ function itemCard(o) {
   const drag = isRecur(it) ? "" : 'draggable="true"';
   return `<div class="${cls}" data-id="${it.id}" data-date="${o.ds}" ${drag}>
     <div class="ititle"><span>${esc(it.content)}</span>
-      <span class="chk ${o.done ? "on" : ""}" role="checkbox" aria-checked="${o.done}" tabindex="0" data-id="${it.id}" data-date="${o.ds}" title="标记完成"></span></div>
+      <span class="chk ${o.done ? "on" : ""}" role="checkbox" aria-checked="${o.done}" tabindex="0" data-id="${it.id}" data-date="${o.ds}" title="标记完成"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 L10 17.5 L19 7"/></svg></span></div>
     ${note}
     <div class="imeta">
       <span class="pill ${it.priority}">${priName(it.priority)}</span>
@@ -334,7 +334,7 @@ function renderMonth() {
 function focusRow(o) {
   const overdue = !o.done && o.ds < todayStr();
   return `<div class="frow ${o.done ? "done" : ""} ${overdue ? "overdue" : ""}" data-id="${o.it.id}" data-date="${o.ds}">
-    <span class="chk ${o.done ? "on" : ""}" role="checkbox" aria-checked="${o.done}" tabindex="0" data-id="${o.it.id}" data-date="${o.ds}"></span>
+    <span class="chk ${o.done ? "on" : ""}" role="checkbox" aria-checked="${o.done}" tabindex="0" data-id="${o.it.id}" data-date="${o.ds}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 L10 17.5 L19 7"/></svg></span>
     <div class="fmain"><div class="ftitle">${esc(o.it.content)}</div>
       <div class="fsub">${o.ds.slice(5)}${o.it.tag ? " · " + esc(o.it.tag) : ""} · ${priName(o.it.priority)}${isRecur(o.it) ? " · 🔁" : ""}</div></div>
     ${overdue ? '<span class="pill" style="background:var(--rose-soft);color:var(--high)">逾期</span>' : ""}
