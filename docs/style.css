@@ -156,7 +156,7 @@ body {
 .chk { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; border: 2px solid var(--line); background: var(--panel); cursor: pointer; position: relative; transition: .15s; align-self: flex-start; }
 .chk:hover { border-color: var(--brand); }
 .chk.on { background: var(--brand); border-color: var(--brand); }
-.chk::after { content: ""; position: absolute; left: 10px; top: 6px; width: 7px; height: 13px; border: solid #fff; border-width: 0 2.6px 2.6px 0; transform: rotate(45deg); opacity: 0; }
+.chk::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 13px; border: solid #fff; border-width: 0 2.6px 2.6px 0; transform: translate(calc(-50% + 3px), calc(-50% + 2px)) rotate(45deg); opacity: 0; }
 .chk.on::after { opacity: 1; }
 .item .chk { margin-left: auto; }
 .frow .chk { flex-shrink: 0; }
