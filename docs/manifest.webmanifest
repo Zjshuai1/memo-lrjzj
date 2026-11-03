@@ -1,0 +1,15 @@
+{
+  "name": "周月备忘计划表",
+  "short_name": "备忘",
+  "description": "周/月备忘计划，待办与已完成一目了然，桌面与手机实时同步",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f7fa",
+  "theme_color": "#2563eb",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
