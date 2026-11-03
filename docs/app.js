@@ -1,6 +1,8 @@
-// 周月备忘计划表 —— GitHub Pages 版前端逻辑（同步后端 = GitHub 仓库文件）
+// 周月备忘计划表 —— GitHub Pages 版前端逻辑
+// 站点放在公开仓库，数据放在同名私有仓库（memo-lrjzj-data），他人无法读取
 const API = "https://api.github.com";
 const DATA_PATH = "memo-data.json";
+const DATA_REPO = "memo-lrjzj-data"; // 私有数据仓库（仅存数据）
 
 const state = {
   items: [],
@@ -31,11 +33,11 @@ function b64encode(str) {
   for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
   return btoa(bin);
 }
-function configured() { return !!(cfg.user && cfg.repo && cfg.token); }
+function configured() { return !!(cfg.user && cfg.token); }
 
 /* ---------- GitHub 同步 ---------- */
 async function ghGet() {
-  const r = await fetch(`${API}/repos/${cfg.user}/${cfg.repo}/contents/${DATA_PATH}`, {
+  const r = await fetch(`${API}/repos/${cfg.user}/${DATA_REPO}/contents/${DATA_PATH}`, {
     headers: { Authorization: `Bearer ${cfg.token}`, Accept: "application/vnd.github+json" },
   });
   if (r.status === 404) return { notFound: true };
@@ -59,7 +61,7 @@ async function save() {
     try { const j = await ghGet(); if (!j.notFound) sha = j.sha; } catch (e) { /* 可能 404 */ }
     const body = { message: "update memo", content: b64encode(JSON.stringify({ items: state.items })) };
     if (sha) body.sha = sha;
-    const r = await fetch(`${API}/repos/${cfg.user}/${cfg.repo}/contents/${DATA_PATH}`, {
+    const r = await fetch(`${API}/repos/${cfg.user}/${DATA_REPO}/contents/${DATA_PATH}`, {
       method: "PUT",
       headers: { Authorization: `Bearer ${cfg.token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -252,7 +254,6 @@ function toggleDone(id) {
 }
 function openSettings() {
   document.getElementById("sUser").value = cfg.user || "";
-  document.getElementById("sRepo").value = cfg.repo || "";
   document.getElementById("sToken").value = cfg.token || "";
   document.getElementById("settings").classList.remove("hidden");
 }
@@ -286,9 +287,8 @@ document.getElementById("gearBtn").addEventListener("click", openSettings);
 document.getElementById("sCancel").addEventListener("click", closeSettings);
 document.getElementById("sSave").addEventListener("click", () => {
   cfg.user = document.getElementById("sUser").value.trim();
-  cfg.repo = document.getElementById("sRepo").value.trim();
   cfg.token = document.getElementById("sToken").value.trim();
-  if (!cfg.user || !cfg.repo || !cfg.token) { alert("三项都要填写"); return; }
+  if (!cfg.user || !cfg.token) { alert("用户名和 Token 都要填写"); return; }
   saveCfg(); closeSettings(); load();
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modalOpen) closeModal(); });
