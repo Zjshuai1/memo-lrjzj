@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
-  <rect width="192" height="192" rx="40" fill="#2563eb"/>
-  <rect x="34" y="30" width="124" height="132" rx="14" fill="#ffffff"/>
-  <rect x="34" y="30" width="124" height="34" rx="14" fill="#1e40af"/>
-  <circle cx="52" cy="47" r="5" fill="#ffffff"/>
-  <circle cx="140" cy="47" r="5" fill="#ffffff"/>
-  <line x1="34" y1="64" x2="158" y2="64" stroke="#dbeafe" stroke-width="3"/>
-  <rect x="50" y="80" width="62" height="10" rx="5" fill="#2563eb"/>
-  <rect x="50" y="100" width="92" height="10" rx="5" fill="#93c5fd"/>
-  <rect x="50" y="120" width="48" height="10" rx="5" fill="#2563eb"/>
-  <path d="M124 118 l10 10 l20 -22" fill="none" stroke="#10b981" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="192" height="192" rx="40" fill="#9caf88"/>
+  <rect x="34" y="30" width="124" height="132" rx="16" fill="#faf7f2"/>
+  <!-- 小芽 -->
+  <path d="M96 146 v-40" stroke="#9caf88" stroke-width="7" stroke-linecap="round"/>
+  <path d="M96 120 q-24 -3 -27 -28 q24 0 27 24" fill="#b2c49c"/>
+  <path d="M96 112 q24 -3 27 -28 q-24 0 -27 24" fill="#9caf88"/>
+  <!-- 小花 -->
+  <circle cx="128" cy="62" r="5.5" fill="#e7c7bd"/>
+  <g fill="#cf9aa6"><circle cx="128" cy="49" r="7"/><circle cx="142" cy="62" r="7"/><circle cx="128" cy="75" r="7"/><circle cx="114" cy="62" r="7"/></g>
+  <rect x="52" y="154" width="76" height="7" rx="3.5" fill="#e7e1d6"/>
 </svg>
