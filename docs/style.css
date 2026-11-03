@@ -104,6 +104,9 @@ body {
 .day.today { border-color: var(--brand); box-shadow: 0 0 0 2px var(--brand-soft); }
 .day.dragover { border-color: var(--brand); background: var(--brand-soft); }
 .day .dhead { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.day .dhead-l { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
+.day .dart { display: inline-flex; line-height: 0; }
+.day .dart .cute { display: block; }
 .day .dhead .dname { font-weight: 700; font-size: 13px; }
 .day .dhead .dnum { font-size: 12px; color: var(--muted); }
 .day .dadd { border: 0; background: transparent; color: var(--brand); cursor: pointer; font-size: 18px; line-height: 1; }
