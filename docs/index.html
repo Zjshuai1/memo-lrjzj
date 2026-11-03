@@ -54,7 +54,7 @@
   </section>
 
   <section class="quickadd">
-    <input id="quick" type="text" placeholder="快速添加：周五 交报告 !高  ·  下周一 团队例会 #工作  ·  3号 缴水电费" />
+    <input id="quick" type="text" name="quickadd" autocomplete="off" placeholder="快速添加：周五 交报告 !高  ·  下周一 团队例会 #工作  ·  3号 缴水电费" />
     <button id="quickAddBtn" class="primary">添加</button>
   </section>
 
@@ -111,8 +111,8 @@
     <div class="modalCard">
       <h2>GitHub 同步设置</h2>
       <p class="hint">数据保存在你的私有仓库 <code>memo-lrjzj-data</code>（仅你自己凭 Token 可读写）。只需填写用户名和 Token（PAT，需 repo 权限）。</p>
-      <label>GitHub 用户名<input type="text" id="sUser" placeholder="如 octocat" /></label>
-      <label>Token（PAT）<input type="password" id="sToken" placeholder="ghp_..." /></label>
+      <label>GitHub 用户名<input type="text" id="sUser" autocomplete="username" placeholder="如 octocat" /></label>
+      <label>Token（PAT）<input type="password" id="sToken" autocomplete="current-password" placeholder="ghp_..." /></label>
       <label class="check"><input type="checkbox" id="sNotify" /> 启用到期 / 逾期系统通知</label>
       <p class="hint">需授权浏览器通知权限；仅在本应用运行时提醒（桌面端最稳定）。</p>
       <div class="modalActions">
