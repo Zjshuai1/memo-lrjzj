@@ -195,33 +195,87 @@ function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 function recurBadge(it) { return isRecur(it) ? '<span class="pill recur">🔁</span>' : ""; }
 function tagPill(it) { return it.tag ? `<span class="pill tag" style="background:${tagColor(it.tag)}">${esc(it.tag)}</span>` : ""; }
 
-/* 可爱小装饰 SVG（莫兰迪淡色） */
-function cuteSVG(kind) {
-  if (kind === "bunny") return `<svg class="cute" viewBox="0 0 64 64" width="58" height="58" aria-hidden="true">
-    <ellipse cx="32" cy="42" rx="18" ry="15" fill="#f1e7df"/>
-    <ellipse cx="22" cy="17" rx="6" ry="14" fill="#f1e7df"/>
-    <ellipse cx="42" cy="17" rx="6" ry="14" fill="#f1e7df"/>
-    <ellipse cx="22" cy="17" rx="3" ry="10" fill="#e7c7bd"/>
-    <ellipse cx="42" cy="17" rx="3" ry="10" fill="#e7c7bd"/>
-    <circle cx="26" cy="40" r="2.4" fill="#6b6258"/>
-    <circle cx="38" cy="40" r="2.4" fill="#6b6258"/>
-    <path d="M29 45 q3 2.4 6 0" stroke="#c08471" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-    <circle cx="32" cy="43.5" r="1.6" fill="#c08471"/>
-    <circle cx="20" cy="44" r="2.4" fill="#e7b6ac" opacity=".6"/>
-    <circle cx="44" cy="44" r="2.4" fill="#e7b6ac" opacity=".6"/></svg>`;
-  if (kind === "sprout") return `<svg class="cute" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
-    <path d="M32 56 v-20" stroke="#9caf88" stroke-width="3" stroke-linecap="round"/>
-    <path d="M32 44 q-15 -2 -17 -17 q15 0 17 13" fill="#b2c49c"/>
-    <path d="M32 41 q15 -2 17 -17 q-15 0 -17 13" fill="#9caf88"/>
-    <path d="M32 52 q-11 0 -13 -11 q11 0 13 9" fill="#c9a66b"/></svg>`;
-  if (kind === "flower") return `<svg class="cute" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true">
-    <circle cx="32" cy="32" r="6" fill="#e7c7bd"/>
+/* 可爱小动物/小花草 SVG（莫兰迪淡色，圆润萌系：大头、点眼、腮红） */
+const WEEK_ART = ["bunny", "cat", "dog", "chick", "bear", "fox", "lamb"];
+function svgWrap(inner, size) {
+  return `<svg class="cute" viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true">${inner}</svg>`;
+}
+function cuteArt(kind, size) {
+  size = size || 52;
+  const EYE = "#4f4842", BLUSH = "#d9a7a0", LINE = "#8a7f74";
+  let s = "";
+  if (kind === "bunny") {
+    s = `<ellipse cx="32" cy="42" rx="18" ry="16" fill="#ece0d8"/>
+    <ellipse cx="22" cy="18" rx="5.5" ry="13" fill="#ece0d8" stroke="#ddcfc4" stroke-width="1"/>
+    <ellipse cx="42" cy="18" rx="5.5" ry="13" fill="#ece0d8" stroke="#ddcfc4" stroke-width="1"/>
+    <ellipse cx="22" cy="18" rx="2.6" ry="9" fill="#e3c1b6"/><ellipse cx="42" cy="18" rx="2.6" ry="9" fill="#e3c1b6"/>
+    <circle cx="26" cy="42" r="2.6" fill="${EYE}"/><circle cx="38" cy="42" r="2.6" fill="${EYE}"/>
+    <circle cx="22" cy="47" r="2.8" fill="${BLUSH}" opacity=".55"/><circle cx="42" cy="47" r="2.8" fill="${BLUSH}" opacity=".55"/>
+    <path d="M29 47 q3 2.4 6 0" stroke="#b58379" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <path d="M32 58 q-6 -1 -7 -7 q6 0 7 5" fill="#aebfa0"/><path d="M32 58 q6 -1 7 -7 q-6 0 -7 5" fill="#9caf88"/>`;
+  } else if (kind === "cat") {
+    s = `<circle cx="32" cy="36" r="18" fill="#cfc3b0"/>
+    <path d="M16 22 L13 8 L28 18 Z" fill="#cfc3b0"/><path d="M48 22 L51 8 L36 18 Z" fill="#cfc3b0"/>
+    <path d="M18 19 L16 12 L25 18 Z" fill="#e3b9b2"/><path d="M46 19 L48 12 L39 18 Z" fill="#e3b9b2"/>
+    <circle cx="26" cy="36" r="2.6" fill="${EYE}"/><circle cx="38" cy="36" r="2.6" fill="${EYE}"/>
+    <circle cx="32" cy="41" r="1.7" fill="#9a8478"/>
+    <path d="M32 42 v2 M29 45 q3 2 6 0" stroke="${LINE}" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <circle cx="21" cy="41" r="2.5" fill="${BLUSH}" opacity=".5"/><circle cx="43" cy="41" r="2.5" fill="${BLUSH}" opacity=".5"/>
+    <circle cx="50" cy="14" r="3.4" fill="#9caf88"/><circle cx="50" cy="14" r="1.4" fill="#eef1e6"/>`;
+  } else if (kind === "dog") {
+    s = `<circle cx="32" cy="36" r="18" fill="#ddccb4"/>
+    <ellipse cx="14" cy="40" rx="7" ry="13" fill="#c9b89c" transform="rotate(-12 14 40)"/><ellipse cx="50" cy="40" rx="7" ry="13" fill="#c9b89c" transform="rotate(12 50 40)"/>
+    <circle cx="26" cy="35" r="2.7" fill="${EYE}"/><circle cx="38" cy="35" r="2.7" fill="${EYE}"/>
+    <ellipse cx="32" cy="43" rx="6" ry="4.5" fill="#efe6d6"/><circle cx="32" cy="41" r="2" fill="#5b4a3e"/>
+    <path d="M32 45 v2 M28 48 q4 3 8 0" stroke="${LINE}" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <circle cx="22" cy="42" r="2.5" fill="${BLUSH}" opacity=".5"/><circle cx="42" cy="42" r="2.5" fill="${BLUSH}" opacity=".5"/>
+    <ellipse cx="51" cy="14" rx="5" ry="3.4" fill="#efe6d6" transform="rotate(-20 51 14)"/><ellipse cx="57" cy="17" rx="3.2" ry="2.3" fill="#efe6d6" transform="rotate(-20 57 17)"/>`;
+  } else if (kind === "chick") {
+    s = `<circle cx="32" cy="38" r="17" fill="#e8dca8"/><circle cx="32" cy="38" r="17" fill="none" stroke="#d8c98f" stroke-width="1"/>
+    <ellipse cx="22" cy="42" rx="6" ry="8" fill="#efe7c4"/><ellipse cx="42" cy="42" rx="6" ry="8" fill="#efe7c4"/>
+    <circle cx="27" cy="36" r="2.6" fill="${EYE}"/><circle cx="37" cy="36" r="2.6" fill="${EYE}"/>
+    <path d="M29 41 l3 -2 l3 2 q-3 2 -6 0 Z" fill="#d8a06a"/>
+    <circle cx="22" cy="41" r="2.3" fill="${BLUSH}" opacity=".5"/><circle cx="42" cy="41" r="2.3" fill="${BLUSH}" opacity=".5"/>
+    <ellipse cx="50" cy="16" rx="7" ry="4" fill="#dfe3e6"/><ellipse cx="44" cy="14" rx="5" ry="3" fill="#eef1f3"/>`;
+  } else if (kind === "bear") {
+    s = `<circle cx="20" cy="20" r="7" fill="#c9b39c"/><circle cx="44" cy="20" r="7" fill="#c9b39c"/>
+    <circle cx="32" cy="36" r="18" fill="#c9b39c"/><circle cx="32" cy="36" r="18" fill="none" stroke="#b89e84" stroke-width="1"/>
+    <ellipse cx="32" cy="42" rx="8" ry="6" fill="#e4d8c8"/>
+    <circle cx="26" cy="34" r="2.7" fill="${EYE}"/><circle cx="38" cy="34" r="2.7" fill="${EYE}"/>
+    <circle cx="32" cy="40" r="2" fill="#5b4a3e"/>
+    <path d="M32 42 v2 M28 45 q4 2.5 8 0" stroke="${LINE}" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <circle cx="23" cy="40" r="2.4" fill="${BLUSH}" opacity=".5"/><circle cx="41" cy="40" r="2.4" fill="${BLUSH}" opacity=".5"/>
+    <circle cx="50" cy="16" r="4" fill="#cf9aa6"/><circle cx="50" cy="10" r="4" fill="#cf9aa6"/><circle cx="56" cy="13" r="4" fill="#cf9aa6"/><circle cx="53" cy="19" r="4" fill="#cf9aa6"/><circle cx="53" cy="13" r="2.4" fill="#e3c1b6"/>`;
+  } else if (kind === "fox") {
+    s = `<path d="M14 20 L18 6 L30 18 Z" fill="#d8a98c"/><path d="M50 20 L46 6 L34 18 Z" fill="#d8a98c"/>
+    <path d="M17 18 L19 11 L26 17 Z" fill="#efe6d6"/><path d="M47 18 L45 11 L38 17 Z" fill="#efe6d6"/>
+    <circle cx="32" cy="36" r="17" fill="#d8a98c"/>
+    <path d="M32 22 q-9 1 -12 12 q12 -3 12 -12 Z" fill="#efe6d6"/><path d="M32 22 q9 1 12 12 q-12 -3 -12 -12 Z" fill="#efe6d6"/>
+    <circle cx="26" cy="36" r="2.6" fill="${EYE}"/><circle cx="38" cy="36" r="2.6" fill="${EYE}"/>
+    <path d="M32 40 l-2 3 h4 Z" fill="#5b4a3e"/>
+    <path d="M32 43 v1 M29 45 q3 2 6 0" stroke="${LINE}" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <circle cx="22" cy="41" r="2.3" fill="${BLUSH}" opacity=".5"/><circle cx="42" cy="41" r="2.3" fill="${BLUSH}" opacity=".5"/>
+    <path d="M50 16 q-6 -2 -7 -8 q6 1 7 7 Z" fill="#9caf88"/>`;
+  } else if (kind === "lamb") {
+    s = `<circle cx="32" cy="40" r="16" fill="#ece7df"/>
+    <circle cx="20" cy="36" r="7" fill="#ece7df"/><circle cx="44" cy="36" r="7" fill="#ece7df"/><circle cx="32" cy="27" r="8" fill="#ece7df"/>
+    <circle cx="32" cy="42" r="12" fill="#dcd4c8"/>
+    <circle cx="27" cy="41" r="2.5" fill="${EYE}"/><circle cx="37" cy="41" r="2.5" fill="${EYE}"/>
+    <path d="M32 45 v2 M29 48 q3 2 6 0" stroke="${LINE}" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <circle cx="24" cy="46" r="2.2" fill="${BLUSH}" opacity=".5"/><circle cx="40" cy="46" r="2.2" fill="${BLUSH}" opacity=".5"/>
+    <path d="M50 16 q-4 -4 0 -8 q4 4 0 8 Z" fill="#cf9aa6"/><path d="M56 20 q4 -4 8 0 q-4 4 -8 0 Z" fill="#cf9aa6"/>`;
+  } else if (kind === "sprout") {
+    s = `<path d="M32 56 v-22" stroke="#9caf88" stroke-width="4" stroke-linecap="round"/>
+    <path d="M32 46 q-13 -2 -15 -15 q13 0 15 12" fill="#b2c49c"/><path d="M32 42 q13 -2 15 -15 q-13 0 -15 12" fill="#9caf88"/>`;
+  } else if (kind === "flower") {
+    s = `<circle cx="32" cy="32" r="5" fill="#e3c1b6"/>
     <g fill="#cf9aa6"><circle cx="32" cy="18" r="7"/><circle cx="46" cy="32" r="7"/><circle cx="32" cy="46" r="7"/><circle cx="18" cy="32" r="7"/></g>
-    <path d="M32 52 v8" stroke="#9caf88" stroke-width="3" stroke-linecap="round"/></svg>`;
-  return "";
+    <path d="M32 50 v8" stroke="#9caf88" stroke-width="3" stroke-linecap="round"/>`;
+  }
+  return svgWrap(s, size);
 }
 function emptyCute(text, kind) {
-  return `<div class="empty cute-empty">${cuteSVG(kind || "bunny")}<div>${esc(text)}</div></div>`;
+  return `<div class="empty cute-empty">${cuteArt(kind || "bunny")}<div>${esc(text)}</div></div>`;
 }
 
 function itemCard(o) {
@@ -246,9 +300,9 @@ function renderWeek() {
   for (let i = 0; i < 7; i++) {
     const d = addDays(mon, i), ds = fmt(d);
     const its = itemsForDate(ds);
-    const list = its.length ? its.map(itemCard).join("") : emptyCute("这一天还没有安排哦～", "bunny");
+    const list = its.length ? its.map(itemCard).join("") : emptyCute("这一天还没有安排哦～", WEEK_ART[i]);
     html += `<div class="day ${ds === today ? "today" : ""}" data-date="${ds}">
-      <div class="dhead"><span><span class="dname">${WEEK[i]}</span> <span class="dnum">${ds.slice(5)}</span></span>
+      <div class="dhead"><span class="dhead-l"><span class="dart">${cuteArt(WEEK_ART[i], 24)}</span><span class="dname">${WEEK[i]}</span> <span class="dnum">${ds.slice(5)}</span></span>
         <button class="dadd" data-date="${ds}" title="添加">＋</button></div>
       <div class="dlist">${list}</div></div>`;
   }
@@ -585,5 +639,11 @@ if ("serviceWorker" in navigator) window.addEventListener("load", () => { naviga
 window.addEventListener("online", () => { if (outbox) { setStatus("已联网，正在同步…"); doSave(); } });
 setInterval(() => { if (configured() && !modalOpen && !outbox) load(); }, 30000);
 setInterval(checkNotif, 60000);
+
+/* 角落小花园装饰（用 JS 生成，保证与页面插画一致） */
+(function fillDeco() {
+  const d = document.querySelector(".deco");
+  if (d) d.innerHTML = cuteArt("bunny", 42) + cuteArt("cat", 38) + cuteArt("flower", 30);
+})();
 
 load();
