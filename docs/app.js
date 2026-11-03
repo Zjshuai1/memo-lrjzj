@@ -285,7 +285,7 @@ function itemCard(o) {
   const drag = isRecur(it) ? "" : 'draggable="true"';
   return `<div class="${cls}" data-id="${it.id}" data-date="${o.ds}" ${drag}>
     <div class="ititle"><span>${esc(it.content)}</span>
-      <input class="chk" type="checkbox" data-id="${it.id}" data-date="${o.ds}" ${o.done ? "checked" : ""} title="标记完成"/></div>
+      <span class="chk ${o.done ? "on" : ""}" role="checkbox" aria-checked="${o.done}" tabindex="0" data-id="${it.id}" data-date="${o.ds}" title="标记完成"></span></div>
     ${note}
     <div class="imeta">
       <span class="pill ${it.priority}">${priName(it.priority)}</span>
@@ -334,7 +334,7 @@ function renderMonth() {
 function focusRow(o) {
   const overdue = !o.done && o.ds < todayStr();
   return `<div class="frow ${o.done ? "done" : ""} ${overdue ? "overdue" : ""}" data-id="${o.it.id}" data-date="${o.ds}">
-    <input class="chk" type="checkbox" data-id="${o.it.id}" data-date="${o.ds}" ${o.done ? "checked" : ""}/>
+    <span class="chk ${o.done ? "on" : ""}" role="checkbox" aria-checked="${o.done}" tabindex="0" data-id="${o.it.id}" data-date="${o.ds}"></span>
     <div class="fmain"><div class="ftitle">${esc(o.it.content)}</div>
       <div class="fsub">${o.ds.slice(5)}${o.it.tag ? " · " + esc(o.it.tag) : ""} · ${priName(o.it.priority)}${isRecur(o.it) ? " · 🔁" : ""}</div></div>
     ${overdue ? '<span class="pill" style="background:var(--rose-soft);color:var(--high)">逾期</span>' : ""}
@@ -632,6 +632,10 @@ document.getElementById("view").addEventListener("click", (e) => {
   if (card) { const it = state.items.find((x) => x.id === card.dataset.id); if (it) openEdit(it); return; }
   const row = e.target.closest(".frow");
   if (row) { const it = state.items.find((x) => x.id === row.dataset.id); if (it) openEdit(it); }
+});
+document.getElementById("view").addEventListener("keydown", (e) => {
+  const c = e.target.closest && e.target.closest(".chk");
+  if (c && (e.key === " " || e.key === "Enter")) { e.preventDefault(); c.click(); }
 });
 
 /* ============ PWA / 初始化 ============ */
