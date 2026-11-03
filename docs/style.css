@@ -152,7 +152,14 @@ body {
 .pill.low { background: var(--sage-soft); color: #6f937e; }
 .pill.tag { color: #fff; }
 .pill.recur { background: var(--brand-soft); color: var(--brand); }
+/* 完成勾选（大圆形按钮，便于点按） */
+.chk { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; border: 2px solid var(--line); background: var(--panel); cursor: pointer; position: relative; transition: .15s; align-self: flex-start; }
+.chk:hover { border-color: var(--brand); }
+.chk.on { background: var(--brand); border-color: var(--brand); }
+.chk::after { content: ""; position: absolute; left: 10px; top: 6px; width: 7px; height: 13px; border: solid #fff; border-width: 0 2.6px 2.6px 0; transform: rotate(45deg); opacity: 0; }
+.chk.on::after { opacity: 1; }
 .item .chk { margin-left: auto; }
+.frow .chk { flex-shrink: 0; }
 
 /* Focus view */
 .focus { display: flex; flex-direction: column; gap: 18px; max-width: 720px; margin: 0 auto; }
