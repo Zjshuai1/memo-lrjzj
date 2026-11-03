@@ -18,6 +18,7 @@
     </div>
     <div class="topRight">
       <div class="status" id="status">未配置</div>
+      <button id="statsBtn" class="iconbtn" title="统计回顾">📊</button>
       <button id="gearBtn" class="gear" title="设置 GitHub">⚙</button>
     </div>
   </header>
@@ -26,6 +27,7 @@
     <div class="seg" id="viewSeg">
       <button data-view="week" class="active">周视图</button>
       <button data-view="month">月视图</button>
+      <button data-view="focus">今日</button>
     </div>
 
     <div class="nav">
@@ -36,14 +38,20 @@
     </div>
 
     <div class="filters">
-      <input id="search" type="search" placeholder="搜索内容/备注…" />
+      <select id="tagFilter" title="按标签筛选"><option value="">全部标签</option></select>
       <select id="filter">
         <option value="all">全部</option>
         <option value="pending">仅待办</option>
         <option value="done">仅已完成</option>
       </select>
+      <input id="search" type="search" placeholder="搜索…" />
       <button id="refreshBtn" title="从云端刷新">⟳</button>
     </div>
+  </section>
+
+  <section class="quickadd">
+    <input id="quick" type="text" placeholder="快速添加：周五 交报告 !高  ·  下周一 团队例会 #工作  ·  3号 缴水电费" />
+    <button id="quickAddBtn" class="primary">添加</button>
   </section>
 
   <section class="progressWrap">
@@ -63,6 +71,7 @@
       <label>日期<input type="date" id="fDate" /></label>
       <label>内容<input type="text" id="fContent" placeholder="例如：提交月度报告" maxlength="200" /></label>
       <label>备注<textarea id="fNotes" rows="3" placeholder="补充细节、链接、负责人…" maxlength="1000"></textarea></label>
+      <label>标签（分组/配色）<input type="text" id="fTag" placeholder="如 工作 / 生活 / 学习" maxlength="20" /></label>
       <label>优先级
         <select id="fPriority">
           <option value="high">高</option>
@@ -70,7 +79,20 @@
           <option value="low">低</option>
         </select>
       </label>
-      <label class="check"><input type="checkbox" id="fDone" /> 标记为已完成</label>
+      <label>重复
+        <select id="fRecur">
+          <option value="none">不重复</option>
+          <option value="daily">每天</option>
+          <option value="weekday">工作日（周一~周五）</option>
+          <option value="weekly">每周（按起始日星期）</option>
+          <option value="biweekly">每两周</option>
+          <option value="monthly">每月（按起始日）</option>
+          <option value="yearly">每年</option>
+        </select>
+      </label>
+      <label id="recurEndWrap">重复结束日期（可选）<input type="date" id="fRecurEnd" /></label>
+      <label class="check" id="doneWrap"><input type="checkbox" id="fDone" /> 标记为已完成</label>
+      <p class="hint" id="recurHint" hidden>重复任务按每一天分别标记完成（勾选卡片上的方框）。</p>
       <div class="modalActions">
         <button id="deleteBtn" class="danger hidden">删除</button>
         <span class="spacer"></span>
@@ -84,14 +106,38 @@
   <div id="settings" class="modal hidden">
     <div class="modalCard">
       <h2>GitHub 同步设置</h2>
-      <p class="hint">数据保存在你的私有仓库 <code>memo-lrjzj-data</code>（仅你自己凭 Token 可读写，他人无法访问）。只需填写用户名和 Token（PAT，需 repo 权限）。</p>
+      <p class="hint">数据保存在你的私有仓库 <code>memo-lrjzj-data</code>（仅你自己凭 Token 可读写）。只需填写用户名和 Token（PAT，需 repo 权限）。</p>
       <label>GitHub 用户名<input type="text" id="sUser" placeholder="如 octocat" /></label>
       <label>Token（PAT）<input type="password" id="sToken" placeholder="ghp_..." /></label>
+      <label class="check"><input type="checkbox" id="sNotify" /> 启用到期 / 逾期系统通知</label>
+      <p class="hint">需授权浏览器通知权限；仅在本应用运行时提醒（桌面端最稳定）。</p>
       <div class="modalActions">
         <span class="spacer"></span>
         <button id="sCancel" class="ghost">取消</button>
         <button id="sSave" class="primary">保存并连接</button>
       </div>
+    </div>
+  </div>
+
+  <!-- 冲突弹窗 -->
+  <div id="conflict" class="modal hidden">
+    <div class="modalCard">
+      <h2>同步冲突</h2>
+      <p class="hint">另一台设备已更新数据。选择如何处理本机改动：</p>
+      <div class="modalActions col">
+        <button id="cfOverwrite" class="primary">用本机覆盖远端</button>
+        <button id="cfMerge" class="ghost">合并两边</button>
+        <button id="cfDiscard" class="danger">放弃本机，用远端</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 统计弹窗 -->
+  <div id="stats" class="modal hidden">
+    <div class="modalCard wide">
+      <h2>统计回顾 · <span id="statsScope">本周</span></h2>
+      <div id="statsBody"></div>
+      <div class="modalActions"><span class="spacer"></span><button id="statsClose" class="ghost">关闭</button></div>
     </div>
   </div>
 
