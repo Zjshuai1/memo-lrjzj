@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#2563eb" />
+  <title>周月备忘计划表</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icon.svg" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🗓️</span>
+      <h1>周月备忘计划表</h1>
+    </div>
+    <div class="topRight">
+      <div class="status" id="status">未配置</div>
+      <button id="gearBtn" class="gear" title="设置 GitHub">⚙</button>
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <div class="seg" id="viewSeg">
+      <button data-view="week" class="active">周视图</button>
+      <button data-view="month">月视图</button>
+    </div>
+
+    <div class="nav">
+      <button id="prevBtn" title="上一周期">‹</button>
+      <span id="rangeLabel" class="range">—</span>
+      <button id="nextBtn" title="下一周期">›</button>
+      <button id="todayBtn" class="today">今天</button>
+    </div>
+
+    <div class="filters">
+      <input id="search" type="search" placeholder="搜索内容/备注…" />
+      <select id="filter">
+        <option value="all">全部</option>
+        <option value="pending">仅待办</option>
+        <option value="done">仅已完成</option>
+      </select>
+      <button id="refreshBtn" title="从云端刷新">⟳</button>
+    </div>
+  </section>
+
+  <section class="progressWrap">
+    <div class="progressMeta">
+      <span id="progressText">完成率 —</span>
+      <span id="overdueText" class="overdueTag" hidden>⚠ 有逾期待办</span>
+    </div>
+    <div class="progressBar"><div id="progressFill" class="fill"></div></div>
+  </section>
+
+  <main id="view" class="view"></main>
+
+  <!-- 编辑弹窗 -->
+  <div id="modal" class="modal hidden">
+    <div class="modalCard">
+      <h2 id="modalTitle">新建备忘</h2>
+      <label>日期<input type="date" id="fDate" /></label>
+      <label>内容<input type="text" id="fContent" placeholder="例如：提交月度报告" maxlength="200" /></label>
+      <label>备注<textarea id="fNotes" rows="3" placeholder="补充细节、链接、负责人…" maxlength="1000"></textarea></label>
+      <label>优先级
+        <select id="fPriority">
+          <option value="high">高</option>
+          <option value="medium" selected>中</option>
+          <option value="low">低</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" id="fDone" /> 标记为已完成</label>
+      <div class="modalActions">
+        <button id="deleteBtn" class="danger hidden">删除</button>
+        <span class="spacer"></span>
+        <button id="cancelBtn" class="ghost">取消</button>
+        <button id="saveBtn" class="primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 设置弹窗 -->
+  <div id="settings" class="modal hidden">
+    <div class="modalCard">
+      <h2>GitHub 同步设置</h2>
+      <p class="hint">数据保存在你的 GitHub 仓库（私有仓库更佳）。需要：用户名、仓库名、Personal Access Token（repo 权限）。</p>
+      <label>GitHub 用户名<input type="text" id="sUser" placeholder="如 octocat" /></label>
+      <label>仓库名<input type="text" id="sRepo" placeholder="如 memo-planner" /></label>
+      <label>Token（PAT）<input type="password" id="sToken" placeholder="ghp_..." /></label>
+      <div class="modalActions">
+        <span class="spacer"></span>
+        <button id="sCancel" class="ghost">取消</button>
+        <button id="sSave" class="primary">保存并连接</button>
+      </div>
+    </div>
+  </div>
+
+  <button id="addFab" class="fab" title="新建备忘">＋</button>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
