@@ -2,17 +2,17 @@
   /* 莫兰迪淡色配色 */
   --bg: #f3efe9;
   --panel: #faf7f2;
-  --ink: #574f47;
-  --muted: #9b9186;
+  --ink: #4a443e;
+  --muted: #948b80;
   --line: #e7e1d6;
   --brand: #9caf88;        /* 鼠尾草绿 */
   --brand-soft: #e6ebe3;
   --done: #b3a99c;         /* 灰褐（完成） */
-  --high: #c28b8b;         /* 灰玫瑰（高优先级） */
-  --mid: #c9b08a;          /* 暖赭（中优先级） */
-  --low: #93a99a;          /* 灰绿（低优先级） */
-  --danger: #b57474;
-  --rose-soft: #f1e0e0;
+  --high: #e06a82;         /* 珊瑚玫瑰红（高优先级，参考 #EC6C8B，更醒目但不刺眼） */
+  --mid: #c9a86a;          /* 暖赭（中优先级，略加深） */
+  --low: #7fa08c;          /* 灰绿（低优先级，略加深） */
+  --danger: #cf5f6e;
+  --rose-soft: #fbe9ec;
   --gold-soft: #f2e9d8;
   --sage-soft: #dde9e1;
   --shadow: 0 1px 3px rgba(79,72,66,.08), 0 4px 14px rgba(79,72,66,.05);
