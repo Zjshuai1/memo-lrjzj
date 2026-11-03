@@ -6,7 +6,8 @@ const DATA_REPO = "memo-lrjzj-data"; // 私有数据仓库（仅存数据）
 /* ============ 基础工具 ============ */
 const WEEK = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 const WD = { "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "日": 0, "天": 0 };
-const TAG_COLORS = ["#2563eb", "#16a34a", "#db2777", "#9333ea", "#ea580c", "#0891b2", "#ca8a04", "#dc2626"];
+// 莫兰迪淡色标签色板
+const TAG_COLORS = ["#9caf88", "#c28b8b", "#c9b08a", "#8fa3b3", "#b09ab7", "#a3b1a1", "#cbb6c2", "#bfa98f"];
 
 const state = {
   items: [], view: "week", anchor: new Date(),
@@ -69,10 +70,19 @@ async function ghGet() {
 function cacheData() { try { localStorage.setItem("memocache", JSON.stringify({ items: state.items, at: Date.now() })); } catch (e) {} }
 
 async function load() {
-  if (!configured()) { openSettings(); setStatus("请先配置 GitHub", true); return; }
+  if (!configured()) { openSettings(); setStatus("请先配置 GitHub", true); render(); return; }
   try {
     const j = await ghGet();
-    state.items = j.notFound ? [] : (JSON.parse(b64decode(j.content)).items || []);
+    if (j.notFound) {
+      if (state.items.length === 0) state.items = [];
+    } else {
+      // 合并而非整体替换：保留本地尚未保存的项，避免刚创建的内容被远端快照覆盖导致“变空白”
+      const remoteItems = JSON.parse(b64decode(j.content)).items || [];
+      const localIds = new Set(state.items.map((i) => i.id));
+      const merged = state.items.slice();
+      for (const r of remoteItems) if (!localIds.has(r.id)) merged.push(r);
+      state.items = merged;
+    }
     lastSync = new Date(); outbox = false; cacheData(); render(); updateStatus();
   } catch (e) {
     const c = localStorage.getItem("memocache");
@@ -185,6 +195,35 @@ function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 function recurBadge(it) { return isRecur(it) ? '<span class="pill recur">🔁</span>' : ""; }
 function tagPill(it) { return it.tag ? `<span class="pill tag" style="background:${tagColor(it.tag)}">${esc(it.tag)}</span>` : ""; }
 
+/* 可爱小装饰 SVG（莫兰迪淡色） */
+function cuteSVG(kind) {
+  if (kind === "bunny") return `<svg class="cute" viewBox="0 0 64 64" width="58" height="58" aria-hidden="true">
+    <ellipse cx="32" cy="42" rx="18" ry="15" fill="#f1e7df"/>
+    <ellipse cx="22" cy="17" rx="6" ry="14" fill="#f1e7df"/>
+    <ellipse cx="42" cy="17" rx="6" ry="14" fill="#f1e7df"/>
+    <ellipse cx="22" cy="17" rx="3" ry="10" fill="#e7c7bd"/>
+    <ellipse cx="42" cy="17" rx="3" ry="10" fill="#e7c7bd"/>
+    <circle cx="26" cy="40" r="2.4" fill="#6b6258"/>
+    <circle cx="38" cy="40" r="2.4" fill="#6b6258"/>
+    <path d="M29 45 q3 2.4 6 0" stroke="#c08471" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <circle cx="32" cy="43.5" r="1.6" fill="#c08471"/>
+    <circle cx="20" cy="44" r="2.4" fill="#e7b6ac" opacity=".6"/>
+    <circle cx="44" cy="44" r="2.4" fill="#e7b6ac" opacity=".6"/></svg>`;
+  if (kind === "sprout") return `<svg class="cute" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+    <path d="M32 56 v-20" stroke="#9caf88" stroke-width="3" stroke-linecap="round"/>
+    <path d="M32 44 q-15 -2 -17 -17 q15 0 17 13" fill="#b2c49c"/>
+    <path d="M32 41 q15 -2 17 -17 q-15 0 -17 13" fill="#9caf88"/>
+    <path d="M32 52 q-11 0 -13 -11 q11 0 13 9" fill="#c9a66b"/></svg>`;
+  if (kind === "flower") return `<svg class="cute" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true">
+    <circle cx="32" cy="32" r="6" fill="#e7c7bd"/>
+    <g fill="#cf9aa6"><circle cx="32" cy="18" r="7"/><circle cx="46" cy="32" r="7"/><circle cx="32" cy="46" r="7"/><circle cx="18" cy="32" r="7"/></g>
+    <path d="M32 52 v8" stroke="#9caf88" stroke-width="3" stroke-linecap="round"/></svg>`;
+  return "";
+}
+function emptyCute(text, kind) {
+  return `<div class="empty cute-empty">${cuteSVG(kind || "bunny")}<div>${esc(text)}</div></div>`;
+}
+
 function itemCard(o) {
   const it = o.it, overdue = !o.done && o.ds < todayStr();
   const cls = ["item", "p-" + it.priority, o.done ? "done" : "", overdue ? "overdue" : "", isRecur(it) ? "recur" : "nodrag"].join(" ").trim();
@@ -197,7 +236,7 @@ function itemCard(o) {
     <div class="imeta">
       <span class="pill ${it.priority}">${priName(it.priority)}</span>
       ${tagPill(it)} ${recurBadge(it)}
-      ${overdue ? '<span class="pill" style="background:#fee2e2;color:#dc2626">逾期</span>' : ""}
+      ${overdue ? '<span class="pill" style="background:var(--rose-soft);color:var(--high)">逾期</span>' : ""}
     </div>
   </div>`;
 }
@@ -207,7 +246,7 @@ function renderWeek() {
   for (let i = 0; i < 7; i++) {
     const d = addDays(mon, i), ds = fmt(d);
     const its = itemsForDate(ds);
-    const list = its.length ? its.map(itemCard).join("") : '<div class="empty">暂无</div>';
+    const list = its.length ? its.map(itemCard).join("") : emptyCute("这一天还没有安排哦～", "bunny");
     html += `<div class="day ${ds === today ? "today" : ""}" data-date="${ds}">
       <div class="dhead"><span><span class="dname">${WEEK[i]}</span> <span class="dnum">${ds.slice(5)}</span></span>
         <button class="dadd" data-date="${ds}" title="添加">＋</button></div>
@@ -244,7 +283,7 @@ function focusRow(o) {
     <input class="chk" type="checkbox" data-id="${o.it.id}" data-date="${o.ds}" ${o.done ? "checked" : ""}/>
     <div class="fmain"><div class="ftitle">${esc(o.it.content)}</div>
       <div class="fsub">${o.ds.slice(5)}${o.it.tag ? " · " + esc(o.it.tag) : ""} · ${priName(o.it.priority)}${isRecur(o.it) ? " · 🔁" : ""}</div></div>
-    ${overdue ? '<span class="pill" style="background:#fee2e2;color:#dc2626">逾期</span>' : ""}
+    ${overdue ? '<span class="pill" style="background:var(--rose-soft);color:var(--high)">逾期</span>' : ""}
   </div>`;
 }
 function renderFocus() {
@@ -255,29 +294,35 @@ function renderFocus() {
   overdue.sort((a, b) => (a.ds < b.ds ? -1 : 1));
   let h = '<div class="focus">';
   h += `<div class="fsec"><div class="fhead">📌 今天（${today}）</div><div class="flist">`;
-  h += todayOcc.length ? todayOcc.map(focusRow).join("") : '<div class="empty">今天暂无安排</div>';
+  h += todayOcc.length ? todayOcc.map(focusRow).join("") : emptyCute("今天还没有安排，给自己放个小假吧～", "sprout");
   h += '</div></div>';
   h += `<div class="fsec"><div class="fhead overdue">⚠ 逾期（${overdue.length}）</div><div class="flist">`;
-  h += overdue.length ? overdue.map(focusRow).join("") : '<div class="empty">无逾期 🎉</div>';
+  h += overdue.length ? overdue.map(focusRow).join("") : emptyCute("没有逾期，棒棒哒 🎉", "flower");
   h += '</div></div></div>';
   return h;
 }
 function render() {
-  const view = document.getElementById("view");
-  view.innerHTML = state.view === "week" ? renderWeek() : state.view === "month" ? renderMonth() : renderFocus();
-  const a = state.anchor;
-  if (state.view === "week") { const mon = mondayOf(a), sun = addDays(mon, 6); document.getElementById("rangeLabel").textContent = `${fmt(mon)} ~ ${fmt(sun)}`; }
-  else if (state.view === "month") document.getElementById("rangeLabel").textContent = `${a.getFullYear()}年${a.getMonth() + 1}月`;
-  else document.getElementById("rangeLabel").textContent = "今日聚焦";
+  try {
+    const view = document.getElementById("view");
+    view.innerHTML = state.view === "week" ? renderWeek() : state.view === "month" ? renderMonth() : renderFocus();
+    const a = state.anchor;
+    if (state.view === "week") { const mon = mondayOf(a), sun = addDays(mon, 6); document.getElementById("rangeLabel").textContent = `${fmt(mon)} ~ ${fmt(sun)}`; }
+    else if (state.view === "month") document.getElementById("rangeLabel").textContent = `${a.getFullYear()}年${a.getMonth() + 1}月`;
+    else document.getElementById("rangeLabel").textContent = "今日聚焦";
 
-  const occs = scopeOccs();
-  const total = occs.length, done = occs.filter((x) => x.done).length;
-  const pct = total ? Math.round((done / total) * 100) : 0;
-  document.getElementById("progressFill").style.width = pct + "%";
-  document.getElementById("progressText").textContent = total ? `完成率 ${pct}%（${done}/${total}）` : "完成率 —（本期无条目）";
-  document.getElementById("overdueText").hidden = !occs.some((x) => !x.done && x.ds < todayStr());
-  refreshTagFilter();
-  bindDnD();
+    const occs = scopeOccs();
+    const total = occs.length, done = occs.filter((x) => x.done).length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressText").textContent = total ? `完成率 ${pct}%（${done}/${total}）` : "完成率 —（本期无条目）";
+    document.getElementById("overdueText").hidden = !occs.some((x) => !x.done && x.ds < todayStr());
+    refreshTagFilter();
+    bindDnD();
+  } catch (e) {
+    console.error("render error:", e);
+    const view = document.getElementById("view");
+    if (view) view.innerHTML = '<div class="empty">渲染出错，请刷新页面重试（' + (e && e.message || e) + '）</div>';
+  }
 }
 
 /* ============ 标签筛选 ============ */
@@ -538,7 +583,7 @@ document.getElementById("view").addEventListener("click", (e) => {
 /* ============ PWA / 初始化 ============ */
 if ("serviceWorker" in navigator) window.addEventListener("load", () => { navigator.serviceWorker.register("./sw.js").catch(() => {}); });
 window.addEventListener("online", () => { if (outbox) { setStatus("已联网，正在同步…"); doSave(); } });
-setInterval(() => { if (configured() && !modalOpen) load(); }, 30000);
+setInterval(() => { if (configured() && !modalOpen && !outbox) load(); }, 30000);
 setInterval(checkNotif, 60000);
 
 load();
