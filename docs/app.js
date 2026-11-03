@@ -646,4 +646,11 @@ setInterval(checkNotif, 60000);
   if (d) d.innerHTML = cuteArt("bunny", 42) + cuteArt("cat", 38) + cuteArt("flower", 30);
 })();
 
+/* 防止浏览器把 GitHub 用户名自动填进快速添加框 */
+(function clearQuick() {
+  const q = document.getElementById("quick");
+  if (q && q.value.trim() === "Zjshuai1") q.value = "";
+  if (q) q.addEventListener("focus", () => { if (q.value.trim() === "Zjshuai1") q.value = ""; });
+})();
+
 load();
