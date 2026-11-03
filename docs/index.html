@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#9caf88" />
   <title>周月备忘计划表</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon.svg" />
@@ -13,7 +13,11 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <span class="logo">🗓️</span>
+      <span class="logo" aria-hidden="true"><svg class="cute" viewBox="0 0 64 64" width="24" height="24">
+        <path d="M32 54 v-22" stroke="#9caf88" stroke-width="4" stroke-linecap="round"/>
+        <path d="M32 46 q-13 -2 -15 -15 q13 0 15 12" fill="#a9bca0"/>
+        <path d="M32 42 q13 -2 15 -15 q-13 0 -15 12" fill="#9caf88"/>
+      </svg></span>
       <h1>周月备忘计划表</h1>
     </div>
     <div class="topRight">
@@ -139,6 +143,32 @@
       <div id="statsBody"></div>
       <div class="modalActions"><span class="spacer"></span><button id="statsClose" class="ghost">关闭</button></div>
     </div>
+  </div>
+
+  <!-- 角落小花园装饰 -->
+  <div class="deco" aria-hidden="true">
+    <svg class="cute" viewBox="0 0 64 64" width="42" height="42">
+      <ellipse cx="32" cy="44" rx="15" ry="12" fill="#f1e7df"/>
+      <ellipse cx="24" cy="20" rx="5" ry="12" fill="#f1e7df"/>
+      <ellipse cx="40" cy="20" rx="5" ry="12" fill="#f1e7df"/>
+      <ellipse cx="24" cy="20" rx="2.5" ry="9" fill="#e7c7bd"/>
+      <ellipse cx="40" cy="20" rx="2.5" ry="9" fill="#e7c7bd"/>
+      <circle cx="27" cy="42" r="2" fill="#6b6258"/>
+      <circle cx="37" cy="42" r="2" fill="#6b6258"/>
+      <path d="M29 46 q3 2 6 0" stroke="#c08471" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <circle cx="20" cy="46" r="2.2" fill="#e7b6ac" opacity=".6"/>
+      <circle cx="44" cy="46" r="2.2" fill="#e7b6ac" opacity=".6"/>
+    </svg>
+    <svg class="cute" viewBox="0 0 64 64" width="36" height="36">
+      <path d="M32 56 v-22" stroke="#9caf88" stroke-width="4" stroke-linecap="round"/>
+      <path d="M32 46 q-13 -2 -15 -15 q13 0 15 12" fill="#b2c49c"/>
+      <path d="M32 42 q13 -2 15 -15 q-13 0 -15 12" fill="#9caf88"/>
+    </svg>
+    <svg class="cute" viewBox="0 0 64 64" width="32" height="32">
+      <circle cx="32" cy="32" r="5" fill="#e7c7bd"/>
+      <g fill="#cf9aa6"><circle cx="32" cy="20" r="6"/><circle cx="44" cy="32" r="6"/><circle cx="32" cy="44" r="6"/><circle cx="20" cy="32" r="6"/></g>
+      <path d="M32 50 v8" stroke="#9caf88" stroke-width="3" stroke-linecap="round"/>
+    </svg>
   </div>
 
   <button id="addFab" class="fab" title="新建备忘">＋</button>
