@@ -181,7 +181,8 @@ function scopeOccs() {
   let dates = [];
   if (state.view === "week") { const mon = mondayOf(state.anchor); for (let i = 0; i < 7; i++) dates.push(fmt(addDays(mon, i))); }
   else if (state.view === "month") { const a = state.anchor, y = a.getFullYear(), m = a.getMonth(); const n = new Date(y, m + 1, 0).getDate(); for (let i = 1; i <= n; i++) dates.push(fmt(new Date(y, m, i))); }
-  else { dates = [todayStr()]; }
+  else if (state.view === "focus") { dates = [todayStr()]; }
+  else { dates = [fmt(state.anchor)]; }
   let occs = [];
   for (const ds of dates) for (const o of occOn(ds)) occs.push(o);
   if (state.view === "focus") {
@@ -355,13 +356,26 @@ function renderFocus() {
   h += '</div></div></div>';
   return h;
 }
+function renderDay() {
+  const ds = fmt(state.anchor), d = parse(ds), today = todayStr(), isToday = ds === today;
+  const occs = occOn(ds).filter(filterOcc).sort((a, b) => (a.it.priority === "high" ? 0 : 1) - (b.it.priority === "high" ? 0 : 1));
+  const wi = (d.getDay() + 6) % 7;
+  let h = '<div class="focus dayview">';
+  h += `<div class="fsec"><div class="fhead ${isToday ? "istoday" : ""}">📅 ${ds} · 周${"日一二三四五六"[d.getDay()]}${isToday ? " · 今天" : ""}</div><div class="flist">`;
+  h += occs.length ? occs.map(focusRow).join("") : emptyCute("这一天还没有安排哦～", WEEK_ART[wi]);
+  h += "</div></div>";
+  h += `<div class="dayAdd"><button class="primary" id="dayAddBtn" data-date="${ds}">＋ 添加当日任务</button></div>`;
+  h += "</div>";
+  return h;
+}
 function render() {
   try {
     const view = document.getElementById("view");
-    view.innerHTML = state.view === "week" ? renderWeek() : state.view === "month" ? renderMonth() : renderFocus();
+    view.innerHTML = state.view === "week" ? renderWeek() : state.view === "month" ? renderMonth() : state.view === "day" ? renderDay() : renderFocus();
     const a = state.anchor;
     if (state.view === "week") { const mon = mondayOf(a), sun = addDays(mon, 6); document.getElementById("rangeLabel").textContent = `${fmt(mon)} ~ ${fmt(sun)}`; }
     else if (state.view === "month") document.getElementById("rangeLabel").textContent = `${a.getFullYear()}年${a.getMonth() + 1}月`;
+    else if (state.view === "day") document.getElementById("rangeLabel").textContent = `${fmt(a)} · 周${"日一二三四五六"[a.getDay()]}`;
     else document.getElementById("rangeLabel").textContent = "今日聚焦";
 
     const occs = scopeOccs();
@@ -592,7 +606,11 @@ document.getElementById("nextBtn").addEventListener("click", () => {
   state.anchor = state.view === "week" ? addDays(state.anchor, 7) : state.view === "month" ? new Date(state.anchor.getFullYear(), state.anchor.getMonth() + 1, 1) : addDays(state.anchor, 1);
   render();
 });
-document.getElementById("todayBtn").addEventListener("click", () => { state.anchor = new Date(); render(); });
+document.getElementById("todayBtn").addEventListener("click", () => {
+  state.view = "focus"; state.anchor = new Date();
+  document.querySelectorAll("#viewSeg button").forEach((x) => x.classList.toggle("active", x.dataset.view === "focus"));
+  render();
+});
 document.getElementById("filter").addEventListener("change", (e) => { state.filter = e.target.value; render(); });
 document.getElementById("tagFilter").addEventListener("change", (e) => { state.tagFilter = e.target.value; render(); });
 document.getElementById("search").addEventListener("input", (e) => { state.search = e.target.value.trim(); render(); });
@@ -626,8 +644,10 @@ document.getElementById("view").addEventListener("click", (e) => {
   if (chk) { e.stopPropagation(); const o = occOn(chk.dataset.date).find((x) => x.it.id === chk.dataset.id); if (o) { occDoneSet(o, !o.done); render(); save(); } return; }
   const add = e.target.closest(".dadd");
   if (add) { openAdd(add.dataset.date); return; }
+  const dayAdd = e.target.closest("#dayAddBtn");
+  if (dayAdd) { openAdd(dayAdd.dataset.date); return; }
   const cell = e.target.closest(".mcell");
-  if (cell) { openAdd(cell.dataset.date); return; }
+  if (cell) { state.view = "day"; state.anchor = parse(cell.dataset.date); document.querySelectorAll("#viewSeg button").forEach((x) => x.classList.remove("active")); render(); return; }
   const card = e.target.closest(".item");
   if (card) { const it = state.items.find((x) => x.id === card.dataset.id); if (it) openEdit(it); return; }
   const row = e.target.closest(".frow");
