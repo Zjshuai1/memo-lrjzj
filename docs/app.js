@@ -677,4 +677,17 @@ setInterval(checkNotif, 60000);
   if (q) q.addEventListener("focus", () => { if (q.value.trim() === "Zjshuai1") q.value = ""; });
 })();
 
+/* iOS 一次性引导：如何把本应用添加到主屏幕（显示正式图标） */
+(function iosTip() {
+  const nav = (typeof navigator !== "undefined") ? navigator : {};
+  const isIOS = /iPad|iPhone|iPod/.test(nav.userAgent || "") && !window.MSStream;
+  const standalone = (window.navigator && window.navigator.standalone === true) || nav.standalone === true;
+  const dismissed = (typeof localStorage !== "undefined") && localStorage.getItem("memo_ios_tip") === "1";
+  if (!isIOS || standalone || dismissed) return;
+  const t = document.getElementById("iosTip");
+  if (t) t.classList.remove("hidden");
+  const c = document.getElementById("iosTipClose");
+  if (c) c.addEventListener("click", () => { t.classList.add("hidden"); try { localStorage.setItem("memo_ios_tip", "1"); } catch (e) {} });
+})();
+
 load();
