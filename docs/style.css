@@ -166,6 +166,9 @@ body {
 .focus { display: flex; flex-direction: column; gap: 18px; max-width: 720px; margin: 0 auto; }
 .fsec .fhead { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--ink); }
 .fsec .fhead.overdue { color: var(--high); }
+.fsec .fhead.istoday { color: var(--high); }
+.dayAdd { display: flex; justify-content: center; margin-top: 4px; }
+.dayAdd button { padding: 9px 20px; border-radius: 999px; font-size: 14px; }
 .flist { display: flex; flex-direction: column; gap: 8px; }
 .frow { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; transition: .15s; }
 .frow:hover { border-color: var(--brand); }
