@@ -6,8 +6,18 @@
   <meta name="theme-color" content="#9caf88" />
   <title>周月备忘计划表</title>
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="icon" href="./icon-192.png" type="image/png" sizes="192x192" />
+  <!-- iOS 主屏图标（iOS 只认 PNG，不认 SVG） -->
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png" />
+  <!-- iOS 独立运行（加主屏后以 App 形式全屏打开） -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="备忘计划" />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -147,6 +157,15 @@
 
   <!-- 角落小花园装饰（由 app.js 注入，保证与页面插画一致） -->
   <div class="deco" aria-hidden="true"></div>
+
+  <!-- iOS 添加到主屏幕引导（一次性） -->
+  <div id="iosTip" class="iostip hidden">
+    <div class="iostip-card">
+      <button id="iosTipClose" class="iostip-x" aria-label="关闭">×</button>
+      <div class="iostip-title">📲 添加到主屏幕</div>
+      <div class="iostip-body">在 Safari 中，点底部 <b>分享</b> 按钮（⬆ 方框箭头），选择 <b>「添加到主屏幕」</b>，即可像 App 一样常驻桌面，并显示本应用图标。</div>
+    </div>
+  </div>
 
   <button id="addFab" class="fab" title="新建备忘">＋</button>
 
